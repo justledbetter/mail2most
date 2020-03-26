@@ -15,6 +15,7 @@ type config struct {
 type general struct {
 	File         string
 	TimeInterval uint
+	NoLoop       bool
 }
 
 type logging struct {
@@ -54,6 +55,8 @@ type mattermost struct {
 	StripHTML                                  bool
 	ConvertToMarkdown                          bool
 	HideFrom                                   bool
+	HideFromEmail                              bool
+	HideSubject                                bool
 	MailAttachments                            bool
 }
 
