@@ -71,6 +71,10 @@ func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 	MS := regexp.MustCompile(`<div style="border-top:solid[^>]*?><p[^>]*?><strong><span[^>]*>[A-Za-z]+:.*`)
 	b = MS.ReplaceAll(b,[]byte(""))
 
+	// Eliminate Outlook iOS replies.
+	OI := regexp.MustCompile(`(?s)<div class="ms-outlook-ios-signature">.*`)
+	b = OI.ReplaceAll(b,[]byte(""))
+
 	// Try to cut out mail clients that are nice enough to tell us where the reply begins. (ProtonMail)
 	om := regexp.MustCompile(`‐‐‐‐‐‐‐ Original Message ‐‐‐‐‐‐‐.*`)
 	b = om.ReplaceAll(b,[]byte(""))
