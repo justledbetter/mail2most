@@ -75,6 +75,10 @@ func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 	OI := regexp.MustCompile(`(?s)<div class="ms-outlook-ios-signature">.*`)
 	b = OI.ReplaceAll(b,[]byte(""))
 
+	// Respect to all you remaining Blackberry users.
+	Bw := regexp.MustCompile(`Sent with BlackBerry Work`)
+	b = Bw.ReplaceAll(b,[]byte(""))
+
 	// Try to cut out mail clients that are nice enough to tell us where the reply begins. (ProtonMail)
 	om := regexp.MustCompile(`‐‐‐‐‐‐‐ Original Message ‐‐‐‐‐‐‐.*`)
 	b = om.ReplaceAll(b,[]byte(""))
