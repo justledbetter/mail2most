@@ -87,9 +87,9 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 		mail.From[0].HostName = html2text.HTML2Text(mail.From[0].HostName)
 	}
 
-fmt.Println("BODY:")
-fmt.Println(body)
-fmt.Println("--")
+//fmt.Println("BODY:")
+//fmt.Println(body)
+//fmt.Println("--")
 	if len(strings.TrimSpace(body)) < 1 {
 		m.Debug("resulted in null body", map[string]interface{}{})
 		return nil

@@ -11,20 +11,22 @@ import (
 func (m Mail2Most) Run() error {
 	alreadySend := make([][]uint32, len(m.Config.Profiles))
 	alreadySendFile := make([][]uint32, len(m.Config.Profiles))
-	if _, err := os.Stat(m.Config.General.File); err == nil {
-		jsonFile, err := os.Open(m.Config.General.File)
-		if err != nil {
-			return err
-		}
+	if !m.Config.NoStateFile {
+		if _, err := os.Stat(m.Config.General.File); err == nil {
+			jsonFile, err := os.Open(m.Config.General.File)
+			if err != nil {
+				return err
+			}
 
-		bv, err := ioutil.ReadAll(jsonFile)
-		if err != nil {
-			return err
-		}
+			bv, err := ioutil.ReadAll(jsonFile)
+			if err != nil {
+				return err
+			}
 
-		err = json.Unmarshal(bv, &alreadySendFile)
-		if err != nil {
-			return err
+			err = json.Unmarshal(bv, &alreadySendFile)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -57,7 +59,9 @@ func (m Mail2Most) Run() error {
 	}
 
 	for {
+		m.Debug( "Starting", map[string]interface{}{"Profiles": len(m.Config.Profiles)})
 		for p := range m.Config.Profiles {
+			m.Debug( "got profile", map[string]interface{}{"profile": p})
 			mails, err := m.GetMail(p)
 			if err != nil {
 				m.Error("Error reaching mailserver", map[string]interface{}{
@@ -88,9 +92,11 @@ func (m Mail2Most) Run() error {
 					} else {
 						alreadySend[p] = append(alreadySend[p], mail.ID)
 					}
-					err = writeToFile(alreadySend, m.Config.General.File)
-					if err != nil {
-						return err
+					if !m.Config.NoStateFile {
+						err = writeToFile(alreadySend, m.Config.General.File)
+						if err != nil {
+							return err
+						}
 					}
 
 				}
@@ -99,8 +105,8 @@ func (m Mail2Most) Run() error {
 
 		// The user wishes this to be a run-once cycle (for use in serverless platforms)
                 if m.Config.General.NoLoop {
-			m.Debug("done", map[string]interface{}{
-				"noloop": true,
+			m.Debug("Exiting due to user configuration", map[string]interface{}{
+				"General.NoLoop": true,
 			})
 			break
 		}
@@ -113,5 +119,6 @@ func (m Mail2Most) Run() error {
 		time.Sleep(time.Duration(m.Config.General.TimeInterval) * time.Second)
 	}
 
+	m.Debug( "Exiting", map[string]interface{}{})
 	return nil
 }

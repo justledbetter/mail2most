@@ -32,7 +32,7 @@ func init() {
 
 // New creates a new Mail2Most object
 func New(confPath string) (Mail2Most, error) {
-	var conf config
+	var conf Config
 	err := parseConfig(confPath, &conf)
 	if err != nil {
 		return Mail2Most{}, err
@@ -63,6 +63,24 @@ func New(confPath string) (Mail2Most, error) {
 
 	m := Mail2Most{Config: conf}
 	err = m.initLogger()
+	if err != nil {
+		return Mail2Most{}, err
+	}
+
+	return m, nil
+}
+
+// Create an M2M object from a JSON config (no more config file formats, please!)
+func NewFromJson(config Config) (Mail2Most, error) {
+	m := Mail2Most{ Config: config }
+
+	if len(config.Profiles) < 1 {
+		config.Profiles = append (config.Profiles, config.DefaultProfile)
+	}
+
+	// This may require special handling (when using Lambda)
+	err := m.initLogger()
+	m.Debug("up and running with JSON config", map[string]interface{}{"Config": config})
 	if err != nil {
 		return Mail2Most{}, err
 	}

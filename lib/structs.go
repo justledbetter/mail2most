@@ -9,7 +9,7 @@ import (
 
 // Mail2Most implements the basic interface
 type Mail2Most struct {
-	Config config
+	Config Config
 	Logger *log.Logger
 }
 

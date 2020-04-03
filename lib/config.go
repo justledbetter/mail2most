@@ -6,26 +6,27 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type config struct {
-	General        general
-	Logging        logging
-	Profiles       []profile `toml:"Profile"`
-	DefaultProfile profile
+type Config struct {
+	General        General
+	Logging        Logging
+	Profiles       []Profile `toml:"Profile"`
+	DefaultProfile Profile
+	NoStateFile    bool
 }
-type general struct {
+type General struct {
 	File         string
 	TimeInterval uint
 	NoLoop       bool
 }
 
-type logging struct {
+type Logging struct {
 	Loglevel string
 	Logtype  string
 	Logfile  string
 	Output   string
 }
 
-type profile struct {
+type Profile struct {
 	IgnoreDefaults bool
 	Mail           maildata
 	Mattermost     mattermost
@@ -60,7 +61,7 @@ type mattermost struct {
 	MailAttachments                            bool
 }
 
-func parseConfig(fileName string, conf *config) error {
+func parseConfig(fileName string, conf *Config) error {
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 		return err
 	}

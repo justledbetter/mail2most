@@ -10,9 +10,9 @@ package mail2most
 //
 
 import (
-	"os"
-	"fmt"
-	"bufio"
+//	"os"
+//	"fmt"
+//	"bufio"
 	"errors"
 	"regexp"
 	"crypto/sha256"
@@ -39,7 +39,7 @@ var seenAttachments map[[32]byte]string
 func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 
 	// DEBUG CODE. Capture input message for analysis.
-	sum := sha256.Sum256(b)
+	/*sum := sha256.Sum256(b)
 	var f *os.File
 	var e error
 	if _, err := os.Stat(fmt.Sprintf("outputs/%x.in",sum)); os.IsNotExist(err) {
@@ -54,7 +54,7 @@ func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 		} else {
 			fmt.Println( " >>> debug thing went boom ", e);
 		}
-	}
+	}*/
 	// END DEBUG CODE
 
 	// Is this an error message?  Nuke it.
@@ -188,7 +188,7 @@ func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 	b = sf.ReplaceAll(b,[]byte(""))
 
 	// DEBUG CODE. Capture resulting output for analysis.
-	if _, err := os.Stat(fmt.Sprintf("outputs/%x.out",sum)); os.IsNotExist(err) {
+	/*if _, err := os.Stat(fmt.Sprintf("outputs/%x.out",sum)); os.IsNotExist(err) {
 		if f, e = os.Create(fmt.Sprintf("outputs/%x.out",sum)); e == nil {
 			writer := bufio.NewWriter(f)
 			_, e = writer.Write(b)
@@ -200,7 +200,7 @@ func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 		} else {
 			fmt.Println( " >>> debug thing went boom ", e);
 		}
-	}
+	}*/
 	// END DEBUG CODE.
 
 	return b, nil
