@@ -18,6 +18,7 @@ func LambdaHandler(ctx context.Context, config m2m.Config) (string, error) {
 	//
 	config.NoStateFile = true
 	config.General.File = ""
+	config.General.NoLoop = true
 	config.Logging.Logtype = "json"
 	config.Logging.Output = "stdout"
 
