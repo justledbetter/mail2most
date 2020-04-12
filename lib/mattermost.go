@@ -164,7 +164,7 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 
 		ch, resp := c.GetChannelByNameForTeamName(channelName, m.Config.Profiles[profile].Mattermost.Team, "")
 		if resp.Error != nil {
-			m.Error("something blew up", map[string]interface{}{"error": resp.Error})
+			m.Error("something blew up", map[string]interface{}{"error": resp.Error, "Team": m.Config.Profiles[profile].Mattermost.Team, "Channels": m.Config.Profiles[profile].Mattermost.Channels})
 			return resp.Error
 		}
 
