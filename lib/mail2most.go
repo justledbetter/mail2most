@@ -67,8 +67,9 @@ func (m Mail2Most) Run() error {
 				m.Error("Error reaching mailserver", map[string]interface{}{
 					"Error":  err,
 					"Server": m.Config.Profiles[p].Mail.ImapServer,
+					"Username": m.Config.Profiles[p].Mail.Username,
 				})
-				break
+				continue
 			}
 
 			for _, mail := range mails {
