@@ -149,11 +149,11 @@ func (m Mail2Most) parseHtml( b []byte ) ([]byte, error) {
 	b = nw.ReplaceAll(b,[]byte(""))
 
 	// Remove all <span> tags and leave their contents
-	sp := regexp.MustCompile(`<span>(.*?)</span>`)
+	sp := regexp.MustCompile(`<span[^>]>(.*?)</span>`)
 	b = sp.ReplaceAll(b,[]byte("$1"))
 
 	// Remove all <img> tags that don't point to websites.
-	im := regexp.MustCompile(`<img.+src="[^h][^t][^>]*?>`)
+	im := regexp.MustCompile(`<img.+src=[^h][^t][^>]*?>`)
 	b = im.ReplaceAll(b,[]byte(""))
 
 	// Remove excessive <br>s
