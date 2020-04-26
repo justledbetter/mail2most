@@ -18,6 +18,8 @@ import (
 	gomessage "github.com/emersion/go-message"
 	"github.com/emersion/go-message/charset"
 	gomail "github.com/emersion/go-message/mail"
+
+	"github.com/imdatngo/mergo"
 )
 
 //var seenAttachments map[[32]byte]string
@@ -74,17 +76,26 @@ func New(confPath string) (Mail2Most, error) {
 func NewFromJson(config Config) (Mail2Most, error) {
 	m := Mail2Most{ Config: config }
 
-	if len(config.Profiles) < 1 {
-		config.Profiles = append (config.Profiles, config.DefaultProfile)
+	for i, profile := range m.Config.Profiles {
+		if !profile.IgnoreDefaults {
+			newProfile := m.Config.DefaultProfile
+			mergo.Merge(&newProfile, profile)
+			m.Config.Profiles[i] = newProfile
+		}
+	}
+
+	if len(m.Config.Profiles) < 1 {
+		m.Config.Profiles = append (m.Config.Profiles, m.Config.DefaultProfile)
 	}
 
 	// This may require special handling (when using Lambda)
 	err := m.initLogger()
-	m.Debug("up and running with JSON config", map[string]interface{}{"Config": config})
 	if err != nil {
+		m.Debug("encountered error initializing logger", map[string]interface{}{"Error": err})
 		return Mail2Most{}, err
 	}
 
+	m.Debug("up and running with JSON config", map[string]interface{}{"loaded profiles": len(m.Config.Profiles)})
 	return m, nil
 }
 
