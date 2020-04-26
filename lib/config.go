@@ -45,6 +45,7 @@ type filter struct {
 	Folders, From, To, Subject []string
 	Unseen                     bool
 	TimeRange                  string
+	IgnoreMailErrorNotifications bool
 }
 
 type mattermost struct {

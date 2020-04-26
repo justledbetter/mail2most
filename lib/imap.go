@@ -70,7 +70,7 @@ func (m Mail2Most) GetMail(profile int) ([]Mail, error) {
 			"folder": folder,
 		})
 
-		limit := (m.Config.Profiles[profile].Mail.Limit + 1) - 1
+		limit := m.Config.Profiles[profile].Mail.Limit
 		seqset := new(imap.SeqSet)
 		if m.Config.Profiles[profile].Filter.Unseen {
 			m.Debug("searching unseen", map[string]interface{}{"unseen": m.Config.Profiles[profile].Filter.Unseen})
@@ -129,7 +129,7 @@ func (m Mail2Most) GetMail(profile int) ([]Mail, error) {
 
 			mr, err := m.read(r)
 			if err != nil {
-				m.Error("Read Error in imap", map[string]interface{}{"Error": err})
+				m.Error("Read Error", map[string]interface{}{"Error": err, "function": "Mail2Most.GetMail"})
 				return []Mail{}, err
 			}
 
@@ -153,10 +153,12 @@ func (m Mail2Most) GetMail(profile int) ([]Mail, error) {
 
 			// Skip mailserver error notifications.
 			if strings.HasPrefix(msg.Envelope.Subject, "Delivery Status Notification") {
-				m.Info("skipping mailserver error", map[string]interface{}{
-					"subject": msg.Envelope.Subject, "uid": msg.Uid,
-				})
-				continue
+				if m.Config.Profiles[profile].Filter.IgnoreMailErrorNotifications {
+					m.Info("skipping mailserver error", map[string]interface{}{
+						"subject": msg.Envelope.Subject, "uid": msg.Uid,
+					})
+					continue
+				}
 			}
 
 			email := Mail{

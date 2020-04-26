@@ -187,7 +187,7 @@ func (m Mail2Most) read(r io.Reader) (*gomail.Reader, error) {
 		m.Debug("Charset Error", map[string]interface{}{"Error": err, "status": "trying to convert"})
 		charSetError = true
 	} else if err != nil {
-		m.Error("Read Error in internals", map[string]interface{}{"Error": err})
+		m.Error("Read Error", map[string]interface{}{"Error": err, "function": "Mail2Most.read"})
 		if err != nil {
 			return nil, err
 		}
