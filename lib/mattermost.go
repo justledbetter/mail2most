@@ -191,7 +191,7 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 		if len(fileIDs) > 0 {
 			post.FileIds = fileIDs
 		}
-		m.Debug("mattermost post", map[string]interface{}{"post": post, "channel": ch.Id, "zsubject": mail.Subject, "zbytes": len(msg)})
+		m.Debug("mattermost post", map[string]interface{}{"channel": ch.Id, "zsubject": mail.Subject, "zbytes": len(msg)})
 		_, resp = c.CreatePost(post)
 		if resp.Error != nil {
 			m.Error("Mattermost Post Error", map[string]interface{}{"error": resp.Error, "status": "fallback send only subject"})
