@@ -1,4 +1,4 @@
-ckage mail2most
+package mail2most
 
 import (
 	"testing"
